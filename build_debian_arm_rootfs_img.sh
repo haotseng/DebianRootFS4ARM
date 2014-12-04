@@ -89,8 +89,7 @@ case "$dev_type" in
           exit_process 1
       fi
       # clean some sectors for partition & special location for cubieboard.
-      dd if=/dev/zero of=$device bs=512 count=1
-      dd if=/dev/zero of=$device bs=1024 seek=544 count=128
+      dd if=/dev/zero of=$device bs=1048576 count=20
       ;;
   *)
       show_syntax $0
@@ -118,20 +117,22 @@ if [ "$deb_local_mirror" == "" ]; then
 fi
 
 #
-# Create partitions (bootp, rootp)
+# Create two partitions (bootp, rootp)
+# 1st partition is 100MB, start sector offset from 40960
+# 2nd partition occupy left size, start sector offset from 204760 (=100M/512 + 40960)
 #
 fdisk $device << EOF
 n
 p
 1
-
+40960
 +$bootsize
 t
 c
 n
 p
 2
-
+245760
 
 w
 EOF
