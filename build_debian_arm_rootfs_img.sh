@@ -111,6 +111,7 @@ rootfs="${work_dir}/rootfs"
 bootfs="${rootfs}/boot"
 
 architecture="armhf"
+#architecture="armel"
 
 if [ "$deb_local_mirror" == "" ]; then
   deb_local_mirror=$deb_mirror
@@ -292,6 +293,8 @@ EOF
 
 chmod +x ${rootfs}/cleanup
 LANG=C chroot ${rootfs} /cleanup
+
+sync
 
 sleep 3
 
