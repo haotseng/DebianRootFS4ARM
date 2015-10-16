@@ -7,7 +7,9 @@
 # And ARM GNU toolchain arm-linux-gnueabihf-xxx
 THIS_SCRIPT=`echo $0 | sed "s/^.*\///"`
 SCRIPT_PATH=`echo $0 | sed "s/\/${THIS_SCRIPT}$//"`
-work_dir=`pwd`/_build_tmp
+real_pwd=`pwd`
+real_pwd=`realpath ${real_pwd}`
+work_dir=${real_pwd}/_build_tmp
 
 #
 # Arguments process
@@ -142,7 +144,12 @@ if [ "$dev_type" == "img" ]; then
   sleep 3
   losetup -d $device
   sleep 3
+
   device=`kpartx -va $temp_image | sed -E 's/.*(loop[0-9])p.*/\1/g' | head -1`
+
+  # Wait a while until the loop-device ready
+  sleep 3
+
   bootp_dmsetup_name=${device}p1
   rootp_dmsetup_name=${device}p2
   device="/dev/mapper/${device}"
